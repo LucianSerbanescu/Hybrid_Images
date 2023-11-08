@@ -1,25 +1,32 @@
 import cv2
 import numpy as np
 from MyHybridImages import myHybridImages
+from MyConvolution import convolve
 
 # Load low and high frequency images
 low_freq_image = cv2.imread("data/dog.bmp")
 high_freq_image = cv2.imread("data/cat.bmp")
 
-# Define standard deviations for low-pass and high-pass filters
-low_sigma = 10
-high_sigma = 5
-
-# Ensure images are in the same shape (you might need to resize them if necessary)
-# low_freq_image = cv2.resize(low_freq_image, (high_freq_image.shape[1], high_freq_image.shape[0]))
+# Set the standard deviations for low-pass and high-pass filtering
+low_sigma = 4
+high_sigma = 3
 
 # Create hybrid image
 hybrid_image = myHybridImages(low_freq_image, low_sigma, high_freq_image, high_sigma)
 
-# Clip the resulting image to ensure valid pixel values
-hybrid_image = np.clip(hybrid_image, 0, 255).astype(np.uint8)
-
 # Display or save the hybrid image as needed
-cv2.imshow("Hybrid Image", hybrid_image)
-cv2.waitKey(0)
-cv2.destroyAllWindows()
+cv2.imwrite("hybridImage.jpg", hybrid_image)
+
+
+
+# # TESTING CONVOLUTION
+#
+# # Example kernel for testing
+# kernel = np.array([[-1, -2, -1],
+#                    [0, 0, 0],
+#                    [1, 2, 1]])
+#
+# # Perform convolution on the color image with the kernel
+# convolved_color_image = convolve(high_freq_image, kernel)
+#
+# cv2.imwrite("convolveFunction.jpg", convolved_color_image)

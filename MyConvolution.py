@@ -1,29 +1,72 @@
 import numpy as np
 
+
+def pad_image(image: np.ndarray, pad_height: int, pad_width: int) -> np.ndarray:
+    """
+    Pad the input image with zeros.
+    :param image: the image (shape=(rows,cols) or shape=(rows,cols,channels))
+    :type numpy.ndarray
+
+    :param pad_height: number of rows to pad on top and bottom
+    :type int
+
+    :param pad_width: number of columns to pad on left and right
+    :type int
+
+    :returns the padded image
+    :rtype numpy.ndarray
+    """
+    padding = ((pad_height, pad_height), (pad_width, pad_width))
+    if len(image.shape) == 3:
+        padding += ((0, 0),)
+    return np.pad(image, padding, mode='constant')
+
+
 def convolve(image: np.ndarray, kernel: np.ndarray) -> np.ndarray:
     """
     Convolve an image with a kernel assuming zero-padding of the image to handle the borders
-    :param image: the image (shape=(rows, cols, channels))
+    :param image: the image (shape=(rows,cols) or shape=(rows,cols,channels))
     :type numpy.ndarray
 
-    :param kernel: the kernel (odd by odd shape=(kheight, kwidth))
+    :param kernel: the kernel (odd by odd shape=(kheight,kwidth))
     :type numpy.ndarray
 
     :returns the convolved image (of the same shape as the input image)
     :rtype numpy.ndarray
     """
-    if kernel.shape[0] % 2 == 0 or kernel.shape[1] % 2 == 0:
-        raise ValueError("Kernel dimensions must be odd numbers")
 
-    pad_height = kernel.shape[0] // 2
-    pad_width = kernel.shape[1] // 2
-    padded_image = np.pad(image, ((pad_height, pad_height), (pad_width, pad_width), (0, 0)), mode='constant')
+    # check that the code is working for both colour and grayscale
+    if len(image.shape) == 3:
+        image_height, image_width, colour_channels = image.shape
+    elif len(image.shape) == 2:
+        image_height, image_width = image.shape
+        colour_channels = 1
+    else:
+        raise ValueError("Input image must be 2D (grayscale) or 3D (color)")
 
-    output = np.zeros_like(image, dtype=np.float32)  # Initialize output image with float32 type
+    # set up the kernel
+    kernel_height, kernel_width = kernel.shape
 
-    for i in range(image.shape[0]):
-        for j in range(image.shape[1]):
-            for k in range(image.shape[2]):
-                output[i, j, k] = np.sum(padded_image[i:i+kernel.shape[0], j:j+kernel.shape[1], k] * kernel)
+    # check if the kernel is odd
+    if kernel_height % 2 == 0 or kernel_width % 2 == 0:
+        raise ValueError("Kernel dimensions must be odd")
+
+    pad_height = kernel_height // 2
+    pad_width = kernel_width // 2
+
+    # put the paddings to the image
+    padded_image = pad_image(image, pad_height, pad_width)
+
+    # this initialization step is necessary because the convolve function calculates the convolution results and
+    # stores them in the output array. By initializing output with zeros, the function ensures that it starts with a
+    # clean slate before accumulating the convolution results.
+    output = np.zeros_like(image, dtype=np.float32)
+
+    # the actual convolution
+    for i in range(image_height):
+        for j in range(image_width):
+            for channel in range(colour_channels):
+                output[i, j, channel] = np.sum(
+                    padded_image[i:i + kernel_height, j:j + kernel_width, channel] * kernel)
 
     return output
