@@ -62,6 +62,17 @@ def convolve(image: np.ndarray, kernel: np.ndarray) -> np.ndarray:
     # clean slate before accumulating the convolution results.
     output = np.zeros_like(image, dtype=np.float32)
 
+
+    # before optimisation
+    # for c in range(colour_channels):
+    #     for y in range(image_height):
+    #         for x in range(image_width):
+    #             roi = padded_image[y:y + kernel_height, x:x + kernel_width, c]
+    #             conv_value = np.sum(roi * kernel)
+    #             result[y, x, c] = conv_value
+    #
+    # return result
+
     # the actual convolution
     for i in range(image_height):
         for j in range(image_width):
