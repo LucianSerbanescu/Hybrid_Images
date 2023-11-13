@@ -1,27 +1,6 @@
 import numpy as np
 
 
-def pad_image(image: np.ndarray, pad_height: int, pad_width: int) -> np.ndarray:
-    """
-    Pad the input image with zeros.
-    :param image: the image (shape=(rows,cols) or shape=(rows,cols,channels))
-    :type numpy.ndarray
-
-    :param pad_height: number of rows to pad on top and bottom
-    :type int
-
-    :param pad_width: number of columns to pad on left and right
-    :type int
-
-    :returns the padded image
-    :rtype numpy.ndarray
-    """
-    padding = ((pad_height, pad_height), (pad_width, pad_width))
-    if len(image.shape) == 3:
-        padding += ((0, 0),)
-    return np.pad(image, padding, mode='constant')
-
-
 def convolve(image: np.ndarray, kernel: np.ndarray) -> np.ndarray:
     """
     Convolve an image with a kernel assuming zero-padding of the image to handle the borders
@@ -35,7 +14,7 @@ def convolve(image: np.ndarray, kernel: np.ndarray) -> np.ndarray:
     :rtype numpy.ndarray
     """
 
-    # check that the code is working for both colour and grayscale
+    # set channels depending on if it is coloured image or grayscale image
     if len(image.shape) == 3:
         image_height, image_width, colour_channels = image.shape
     elif len(image.shape) == 2:
@@ -62,17 +41,6 @@ def convolve(image: np.ndarray, kernel: np.ndarray) -> np.ndarray:
     # clean slate before accumulating the convolution results.
     output = np.zeros_like(image, dtype=np.float32)
 
-
-    # before optimisation
-    # for c in range(colour_channels):
-    #     for y in range(image_height):
-    #         for x in range(image_width):
-    #             roi = padded_image[y:y + kernel_height, x:x + kernel_width, c]
-    #             conv_value = np.sum(roi * kernel)
-    #             result[y, x, c] = conv_value
-    #
-    # return result
-
     # the actual convolution
     for i in range(image_height):
         for j in range(image_width):
@@ -81,3 +49,27 @@ def convolve(image: np.ndarray, kernel: np.ndarray) -> np.ndarray:
                     padded_image[i:i + kernel_height, j:j + kernel_width, channel] * kernel)
 
     return output
+
+
+def pad_image(image: np.ndarray, pad_height: int, pad_width: int) -> np.ndarray:
+    """
+    Pad the input image with zeros.
+    :param image: the image (shape=(rows,cols) or shape=(rows,cols,channels))
+    :type numpy.ndarray
+
+    :param pad_height: number of rows to pad on top and bottom
+    :type int
+
+    :param pad_width: number of columns to pad on left and right
+    :type int
+
+    :returns the padded image
+    :rtype numpy.ndarray
+    """
+    padding = ((pad_height, pad_height), (pad_width, pad_width))
+
+    # If the image is a color image, add padding for channels
+    if len(image.shape) == 3:
+        padding = padding + ((0, 0),)
+
+    return np.pad(image, padding, mode='constant')

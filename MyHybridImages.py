@@ -22,32 +22,57 @@ def myHybridImages(lowImage: np.ndarray, lowSigma: float, highImage: np.ndarray,
     :rtype numpy.ndarray
     """
 
+    # print(lowImage)
+
     # Low-pass filter lowImage
     low_kernel = makeGaussianKernel(lowSigma)
     low_pass_filtered = convolve(lowImage, low_kernel)
+
+    # Print the entire array
+    # print(my_array)
+    #     print(row)
+
+    # print(low_kernel)
+    # print(low_pass_filtered)
     # cv2.imwrite("low_pass_filtered.jpg", low_pass_filtered)
+
+    # Normalize the pixel values to the range [0, 1]
+    # low_pass_filtered_normalised = low_pass_filtered / 255.0
+    # cv2.imshow('low_pass_filtered', low_pass_filtered_normalised)
+    # cv2.waitKey(0)
+    # cv2.destroyAllWindows()
+
+    # print(highImage)
 
     # High-pass filter highImage
     high_kernel = makeGaussianKernel(highSigma)
     high_pass_filtered = highImage - convolve(highImage, high_kernel)
+
+    # print(high_kernel)
+    # print(high_pass_filtered)
     # cv2.imwrite("high_pass_filtered.jpg", high_pass_filtered)
+
+    # # Normalize the pixel values to the range [0, 1]
+    # high_pass_filtered_normalised = high_pass_filtered / 255.0 + 0.5
+    # cv2.imshow('high_pass_filtered', high_pass_filtered_normalised)
+    # cv2.waitKey(0)
+    # cv2.destroyAllWindows()
+    # cv2.imwrite("high_pass_filtered_normalised.jpg", high_pass_filtered_normalised)
 
     # Combine low-pass and high-pass images to create the hybrid image
     hybrid_image = low_pass_filtered + high_pass_filtered
+    # print(hybrid_image)
+    cv2.imwrite("hybrid_image.jpg", hybrid_image)
 
-    # Normalize the hybrid image to the range [0, 1]
-    hybrid_image_normalized = (hybrid_image - hybrid_image.min()) / (hybrid_image.max() - hybrid_image.min())
+    # Normalize the pixel values to the range [0, 1] for using cv2.show
+    # The image with contrast 1:1 with the example
+    hybrid_image_normalised = hybrid_image / 255.0
+    cv2.imshow('hybrid_image_normalised', hybrid_image_normalised)
+    cv2.waitKey(0)
+    cv2.destroyAllWindows()
 
-    # Optionally, you can scale the normalized hybrid image back to the range [0, 255] for visualization
-    hybrid_image_visualized = (hybrid_image_normalized * 255).astype(np.uint8)
+    return hybrid_image
 
-    # cv2.imshow('Colored Hybrid Image', hybrid_image_visualized)
-    # cv2.waitKey(0)
-    # cv2.destroyAllWindows()
-    # Save the normalized hybrid image
-    # cv2.imwrite("hybrid_image_normalized.jpg", hybrid_image_visualized)
-
-    return hybrid_image_visualized
 
 def makeGaussianKernel(sigma: float) -> np.ndarray:
     """
@@ -58,7 +83,7 @@ def makeGaussianKernel(sigma: float) -> np.ndarray:
     # Calculate the size of the kernel
     size = int(floor(8 * sigma + 1))
     if size % 2 == 0:
-        size += 1  # Ensure the size is odd
+        size = size + 1  # Ensure the size is odd
 
     # Calculate the center of the kernel
     center = size // 2

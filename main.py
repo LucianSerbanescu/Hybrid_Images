@@ -19,28 +19,49 @@ high_freq_image_4 = cv2.imread("data/plane.bmp")
 low_freq_image_5 = cv2.imread("data/fish.bmp")
 high_freq_image_5 = cv2.imread("data/submarine.bmp")
 
+# high_freq_personal_image = cv2.imread("personal_example/dali_painting.jpg")
+# low_freq_personal_image = cv2.imread("personal_example/abraham_lincon.jpg")
+
+high_freq_personal_image = cv2.imread("personal_example/costume.jpg")
+low_freq_personal_image = cv2.imread("personal_example/icecream.jpg")
+
+
 # Convert the image to NumPy array
 # low_freq_image = np.array("data/dog.bmp")
 # high_freq_image = np.array("data/cat.bmp")
 
 # Set the standard deviations for low-pass and high-pass filtering
-low_sigma = 4
+# low_sigma = 4
+# high_sigma = 3
+
+# for the personal image
+# lincon
+# low_sigma = 10
+# high_sigma = 20
+
+# for the personal image
+# ice_cream
+low_sigma = 8
 high_sigma = 3
 
-# Create hybrid image
-hybrid_image_1 = myHybridImages(low_freq_image_1, low_sigma, high_freq_image_1, high_sigma)
-hybrid_image_2 = myHybridImages(low_freq_image_2, low_sigma, high_freq_image_2, high_sigma)
-hybrid_image_3 = myHybridImages(low_freq_image_3, low_sigma, high_freq_image_3, high_sigma)
-hybrid_image_4 = myHybridImages(low_freq_image_4, low_sigma, high_freq_image_4, high_sigma)
-hybrid_image_5 = myHybridImages(low_freq_image_5, low_sigma, high_freq_image_5, high_sigma)
+# TODO: create test cases for uneven Kernels
 
+# Create hybrid image
+# hybrid_image_1 = myHybridImages(low_freq_image_1, low_sigma, high_freq_image_1, high_sigma)
+# hybrid_image_2 = myHybridImages(low_freq_image_2, low_sigma, high_freq_image_2, high_sigma)
+# hybrid_image_3 = myHybridImages(low_freq_image_3, low_sigma, high_freq_image_3, high_sigma)
+# hybrid_image_4 = myHybridImages(low_freq_image_4, low_sigma, high_freq_image_4, high_sigma)
+# hybrid_image_5 = myHybridImages(low_freq_image_5, low_sigma, high_freq_image_5, high_sigma)
+personal_example = myHybridImages(low_freq_personal_image, low_sigma, high_freq_personal_image, high_sigma)
 
 # Display or save the hybrid image as needed
-cv2.imwrite("output_images/hybridImage_1.jpg", hybrid_image_1)
-cv2.imwrite("output_images/hybridImage_2.jpg", hybrid_image_2)
-cv2.imwrite("output_images/hybridImage_3.jpg", hybrid_image_3)
-cv2.imwrite("output_images/hybridImage_4.jpg", hybrid_image_4)
-cv2.imwrite("output_images/hybridImage_5.jpg", hybrid_image_5)
+# cv2.imwrite("output_images/hybridImage_1.jpg", hybrid_image_1)
+# cv2.imwrite("output_images/hybridImage_2.jpg", hybrid_image_2)
+# cv2.imwrite("output_images/hybridImage_3.jpg", hybrid_image_3)
+# cv2.imwrite("output_images/hybridImage_4.jpg", hybrid_image_4)
+# cv2.imwrite("output_images/hybridImage_5.jpg", hybrid_image_5)
+cv2.imwrite("output_images/personal_example.jpg", personal_example)
+
 
 
 
