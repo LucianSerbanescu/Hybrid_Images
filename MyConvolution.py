@@ -41,12 +41,12 @@ def convolve(image: np.ndarray, kernel: np.ndarray) -> np.ndarray:
     # clean slate before accumulating the convolution results.
     output = np.zeros_like(image, dtype=np.float32)
 
-    # the actual convolution
+    # the actual convolution with vectorization
     for i in range(image_height):
         for j in range(image_width):
             for channel in range(colour_channels):
                 output[i, j, channel] = np.sum(
-                    padded_image[i:i + kernel_height, j:j + kernel_width, channel] * kernel)
+                    padded_image[i: (i + kernel_height), j: (j + kernel_width), channel] * kernel)
 
     return output
 

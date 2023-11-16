@@ -1,6 +1,7 @@
 import numpy as np
 from MyConvolution import convolve
 from math import floor
+import math
 import cv2
 
 
@@ -62,16 +63,16 @@ def myHybridImages(lowImage: np.ndarray, lowSigma: float, highImage: np.ndarray,
     # Combine low-pass and high-pass images to create the hybrid image
     hybrid_image = low_pass_filtered + high_pass_filtered
     # print(hybrid_image)
-    cv2.imwrite("hybrid_image.jpg", hybrid_image)
+    # cv2.imwrite("hybrid_image.jpg", hybrid_image)
 
-    # Normalize the pixel values to the range [0, 1] for using cv2.show
-    # The image with contrast 1:1 with the example
-    hybrid_image_normalised = hybrid_image / 255.0
-    cv2.imshow('hybrid_image_normalised', hybrid_image_normalised)
-    cv2.waitKey(0)
-    cv2.destroyAllWindows()
+    # normalize it
+    hybrid_image_normalised = (hybrid_image - hybrid_image.min()) / (hybrid_image.max() - hybrid_image.min())
+    hybrid_image_normalised = (hybrid_image_normalised * 255).astype(np.uint8)
 
-    return hybrid_image
+    # print(np.min(hybrid_image_normalised))
+    # print(np.max(hybrid_image_normalised))
+
+    return hybrid_image_normalised
 
 
 def makeGaussianKernel(sigma: float) -> np.ndarray:
@@ -88,11 +89,11 @@ def makeGaussianKernel(sigma: float) -> np.ndarray:
     # Calculate the center of the kernel
     center = size // 2
 
-    # Create a grid of coordinates from -center to center
+    # Create a grid of coordinates from -center to center for vectorization
     x, y = np.mgrid[-center:center + 1, -center:center + 1]
 
     # Calculate the Gaussian values using the 2D formula
-    kernel = np.exp(-(x ** 2 + y ** 2) / (2 * sigma ** 2))
+    kernel = 1 / (2 * sigma ** 2 * math.pi) * np.exp(-(x ** 2 + y ** 2) / (2 * sigma ** 2))
 
     # Normalize the kernel so that the sum of values is 1.0
     kernel /= kernel.sum()
